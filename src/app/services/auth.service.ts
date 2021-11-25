@@ -8,14 +8,22 @@ import { Auth, GoogleAuthProvider } from 'firebase/auth';
 })
 export class AuthService {
 
- 
+  userInfo:string[]=[]
   LoginSuccess=false;
   userName!: string;
   loginFailed!: boolean;
+
+  error:any
   userNameFun()
   {
     return this.userName
   }
+
+  userData()
+  {
+    return this.userInfo
+  }
+
 
   constructor( public afAuth: AngularFireAuth) { }
 
@@ -31,10 +39,23 @@ export class AuthService {
         this.LoginSuccess=true
        
         this.userName=result.user._delegate.displayName
+      
+        this.userInfo.push(result.user.metadata.lastSignInTime) 
+        this.userInfo.push(result.user.metadata.creationTime)
+
+       
+       
+
+        
        
     }).catch((error: any) => {
       this.loginFailed=true
-        console.log(error)
+
+        console.warn(this.userInfo)
+        this.userInfo.push(error.message)
+
+     
+        console.warn("msge",error.message)
     })
   }
 
